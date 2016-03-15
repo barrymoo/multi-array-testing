@@ -1,13 +1,14 @@
-cmake_minimum_required (VERSION 3.4.3)
+cmake_minimum_required (VERSION 3.3.0)
 
 # Boost
 find_package(Boost)
 include_directories(${Boost_INCLUDE_DIRS})
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ftree-vectorize -fopt-info-vec -fopt-info-vec-missed")
-
 # CBLAS
-find_package(CBLAS)
+#find_package(CBLAS)
+
+# CUDA
+find_package(CUDA)
 
 # OpenMP
 find_package(OpenMP)
@@ -15,12 +16,17 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
+# Boost and OpenMP Programs
 add_executable(ma-serial ma-serial.cpp)
 add_executable(ma-parallel ma-parallel.cpp)
 add_executable(ca-serial ca-serial.cpp)
 add_executable(ca-parallel ca-parallel.cpp)
-add_executable(ma-blas ma-blas.cpp)
+#add_executable(ma-blas ma-blas.cpp)
 
 target_link_libraries(ma-serial ${Boost_LIBRARIES})
 target_link_libraries(ma-parallel ${Boost_LIBRARIES})
-target_link_libraries(ma-blas ${CBLAS_LIBRARIES})
+#target_link_libraries(ma-blas ${CBLAS_LIBRARIES})
+
+# CUDA Programs
+cuda_add_executable(ma-cuda-daxpy ma-cuda-daxpy.cu)
+target_link_libraries(ma-cuda-daxpy ${CUDA_LIBRARIES})
