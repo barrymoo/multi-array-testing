@@ -1,5 +1,7 @@
+#include <stdlib>
+
 int main () {
-  int N = 100000000;
+  int N = 1000000;
 
   double a[N];
   double b[N];

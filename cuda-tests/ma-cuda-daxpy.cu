@@ -4,9 +4,17 @@
 
 #define N 100000000
 
-__global__ void daxpy(int n, double alpha, double *x, double *y) {
+__global__ void daxpy_simple(int n, double alpha, double *x, double *y) {
   int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx < N) {
+  if (idx < n) {
+    y[idx] += alpha * x[idx];
+  }
+}
+
+__global__ void daxpy(int n, double alpha, double *x, double *y) {
+  for (int idx = blockIdx.x * blockDim.x + threadIdx.x;
+       idx < n;
+       idx += blockDim.x * gridDim.x) {       
     y[idx] += alpha * x[idx];
   }
 }
@@ -30,17 +38,21 @@ int main () {
   cudaMalloc((void**) &device_x, N * sizeof(double));
   cudaMalloc((void**) &device_y, N * sizeof(double));
   // copy to device
-  cudaMemcpy(&x, device_x, N * sizeof(double), cudaMemcpyHostToDevice);
-  cudaMemcpy(&y, device_y, N * sizeof(double), cudaMemcpyHostToDevice);
-  // launch kernel
-  daxpy<<<N/64,64>>>(N, 1.0, device_x, device_y);
+  cudaMemcpy(device_x, &x[0], N * sizeof(double), cudaMemcpyHostToDevice);
+  cudaMemcpy(device_y, &y[0], N * sizeof(double), cudaMemcpyHostToDevice);
+
+  // Launch Kernel in Fast 
+  int numSMs;
+  cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
+  daxpy<<<32*numSMs,256>>>(N, 1.0, device_x, device_y);
+
   // copy from device
-  cudaMemcpy(&y, device_y, N * sizeof(double), cudaMemcpyDeviceToHost);
+  cudaMemcpy(&y[0], device_y, N * sizeof(double), cudaMemcpyDeviceToHost);
   // Free Cuda Memory
   cudaFree(device_x);
   cudaFree(device_y);
 
-  std::cout << y[0] << '\n';
+  std::cout << y[N-1] << '\n';
 
   return 0;
 }
