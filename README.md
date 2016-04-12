@@ -1,16 +1,32 @@
-# Boost multi-array Testing
+# boost::multi-array as a tensor library
 
-Basically, I want to make sure this could be impactful in the scientific community before I start using it.
+Basically, I am a scientist looking at boost::multi-array as a tensor
+container. If it can be used to create code on many architectures (GPU/Intel
+MIC etc.) than it could be useful to me.
 
 Positive Features:
-- It's an N-dimensional container with slicing, which I think will become necessary.
-- I can call necessary libraries (cblas_daxpy in ma-cblas.cpp)
-- I have no problem using OpenMP (various examples)
+- It's an N-dimensional container with slicing, necessary.
+- I can call other libraries (BLAS, cuBLAS, etc.)
+- OpenMP/MPI will be trivial.
 
 Next Feature Tests:
-- Can we get everything parallelized on the GPU with CUDA?
+- Slicing on the GPU?
+- MPI/OpenMP examples
+- Speed vs. standard C arrays
 
-Building it (you'll need `cmake`, `boost`, `openmp` capable compiler, and `cblas` installed in standard locations, or modify `CMakeLists.txt`):
+Building it
+===========
+
+Need:
+- `cmake`
+- `boost::multi-array`
+
+Optional, but basically the whole point of this repository:
+- OpenMP
+- CBLAS
+- CUDA
+- OpenACC: I haven't tested this yet
+
 ```
 git clone https://github.com/barrymoo/multi-array-testing.git
 cd multi-array-testing

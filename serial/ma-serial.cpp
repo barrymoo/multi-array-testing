@@ -1,6 +1,4 @@
 #include <boost/multi_array.hpp>
-#include <omp.h>
-#include <iostream>
 
 int main () {
   typedef boost::multi_array<double, 1> vector;

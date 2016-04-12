@@ -1,8 +1,7 @@
 #include <boost/multi_array.hpp>
-#include <omp.h>
 #include <iostream>
+
 #include "cblas.h"
-#include "cblas_f77.h"
 
 int main () {
   typedef boost::multi_array<double, 1> vector;
