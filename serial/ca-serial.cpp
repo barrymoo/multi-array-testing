@@ -1,4 +1,4 @@
-#include <stdlib>
+#include <cstdlib>
 
 int main () {
   int N = 1000000;
